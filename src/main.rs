@@ -8,9 +8,10 @@ fn main() {
     // 判断是否有参数
     if args.len() < 2 {
         println!(
-            "{}{}{}{}{}",
+            "{}\n{}\n{}{}{}{}",
             "Variance".truecolor(0, 191, 255).bold(),
-            "\n    一个简单的计算方差的工具。由Rust编写而成。是",
+            "  v1.0.1".truecolor(248,248,255),
+            "    一个简单的计算方差的工具。由Rust编写而成。是",
             "LKHSSS".truecolor(0, 238, 118),
             "学习Rust语言的练手之作。",
             "\n命令格式： \n    .\\variance 1 2 3 4 5 6 7"
@@ -66,6 +67,11 @@ fn variance(numlist: Vec<f64>) -> f64 {
     let variance = allsum / len as f64;
 
     println!("方差：   {}", &variance.to_string().truecolor(0, 191, 255));
+
+    // 计算标准差
+    let std = variance.sqrt();
+
+    println!("标准差： {} ", &std.to_string().truecolor(75, 0, 130));
 
     variance
 }

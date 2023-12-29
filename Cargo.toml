@@ -1,6 +1,6 @@
 [package]
 name = "variance"
-version = "0.1.0"
+version = "1.0.1"
 edition = "2021"
 authors = ["LKHSSS <Likhsss@qq.com>"]
 description = "一个简单的计算方差的工具。由Rust编写而成。是LKHSSS学习Rust语言的练手之作。"
