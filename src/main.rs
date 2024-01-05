@@ -10,7 +10,7 @@ fn main() {
         println!(
             "{}\n{}\n{}{}{}{}",
             "Variance".truecolor(0, 191, 255).bold(),
-            "  v1.0.1".truecolor(248,248,255),
+            "  v1.0.1".truecolor(248, 248, 255),
             "    一个简单的计算方差的工具。由Rust编写而成。是",
             "LKHSSS".truecolor(0, 238, 118),
             "学习Rust语言的练手之作。",
@@ -71,7 +71,7 @@ fn variance(numlist: Vec<f64>) -> f64 {
     // 计算标准差
     let std = variance.sqrt();
 
-    println!("标准差： {} ", &std.to_string().truecolor(75, 0, 130));
+    println!("标准差： {} ", &std.to_string().truecolor(200, 50, 130));
 
     variance
 }
