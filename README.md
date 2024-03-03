@@ -1,4 +1,5 @@
 # Variance
+[![build](https://github.com/Lkhsss/Variance/actions/workflows/build.yml/badge.svg?branch=main&event=workflow_run)](https://github.com/Lkhsss/Variance/actions/workflows/build.yml)
 
 一个简单的计算方差的工具，实现了彩色输出。
 由Rust编写而成。
