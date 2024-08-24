@@ -39,8 +39,11 @@ fn main() {
 
         // 打印接收到的数据
         // println!("接收到的数据：{:?}", numlist);
-
-        variance(numlist);
+        if numlist.len() >= 1 {
+            variance(numlist);
+        } else {
+            println!("{} 没有有效参数", "[ERROR]".red().bold());
+        }
     }
 }
 
@@ -50,7 +53,7 @@ fn variance(numlist: Vec<f64>) -> f64 {
     let len = numlist.len() as u64;
     // \033[字背景;前景m
     // \033[38;2;<r>;<g>;<b>m
-    println!("\n共 {} 项有效数据\n", &len.to_string().red());
+    println!("\n共 {} 项有效数据\n", &len.to_string().bright_green());
 
     // 计算总和
     let sum: f64 = numlist.iter().sum();

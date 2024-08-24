@@ -7,7 +7,12 @@ description = "一个简单的计算方差的工具。由Rust编写而成。是L
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-colored = "2.0.4"
+colored = {version="2.0.4",default-features=false}
 
 [profile.release]
-panic = 'abort'
+#缩小编译后体积
+strip = true
+# strip = "debuginfo" #仅移除debug信息
+lto = true #启用链接时间优化
+panic = "abort" #panic时直接abort
+opt-level = "z" #优化级别
