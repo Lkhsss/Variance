@@ -31,6 +31,37 @@
 
 ---
 
+## 作为库使用
+
+```toml
+[dependencies]
+variance = "1.2"
+```
+
+```rust
+use variance::{variance, Variance};
+
+// 一次性计算（总体方差，÷n）
+let v = variance(&[1., 2., 3., 4., 5., 6., 7.]); // 4.0
+
+// 流式累加：Constructing 可 update，Computed 只读
+let mut acc = Variance::new(); // 或 Variance::from_slice(&data)
+for x in [1., 2., 3.] {
+    acc.update(x);
+}
+let stat = acc.compute();
+
+stat.mean();                   // 均值
+stat.count();                  // 样本数
+stat.get_variance();           // 总体方差 ÷n
+stat.get_sample_variance();    // 无偏样本方差 ÷(n-1)，n<2 时为 NaN
+stat.get_standard_deviation(); // 总体标准差
+```
+
+`Variance<S>` 用 Typestate 在编译期约束状态：只有 `Variance<Constructing>` 能 `update` / `compute`，`Variance<Computed>` 只能读取，因此不会读到过期结果。
+
+---
+
 # CHANGELOG
 ## v1.0.0
 1. 实现了总数，平均数，方差的计算
