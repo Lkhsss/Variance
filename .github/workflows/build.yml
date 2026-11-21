@@ -54,13 +54,13 @@ jobs:
         include:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-musl
-            archive: variance-linux.tar.gz
+            archive: varstat-linux.tar.gz
           - os: macos-latest
             target: x86_64-apple-darwin
-            archive: variance-macos.tar.gz
+            archive: varstat-macos.tar.gz
           - os: windows-latest
             target: x86_64-pc-windows-msvc
-            archive: variance-windows.7z
+            archive: varstat-windows.7z
     steps:
       - uses: actions/checkout@v7
 
@@ -84,12 +84,12 @@ jobs:
           cp README.md archive/
           cd archive
           if [ "${{ matrix.target }}" = "x86_64-pc-windows-msvc" ]; then
-            cp "../target/${{ matrix.target }}/release/variance.exe" .
-            7z a "${{ matrix.archive }}" README.md variance.exe
+            cp "../target/${{ matrix.target }}/release/varstat.exe" .
+            7z a "${{ matrix.archive }}" README.md varstat.exe
           else
-            cp "../target/${{ matrix.target }}/release/variance" .
-            strip variance
-            tar -czf "${{ matrix.archive }}" README.md variance
+            cp "../target/${{ matrix.target }}/release/varstat" .
+            strip varstat
+            tar -czf "${{ matrix.archive }}" README.md varstat
           fi
 
       - uses: actions/upload-artifact@v7

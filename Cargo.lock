@@ -12,8 +12,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "variance"
-version = "1.2.3"
+name = "varstat"
+version = "1.3.0"
 dependencies = [
  "colored",
 ]

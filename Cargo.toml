@@ -1,12 +1,12 @@
 [package]
-name = "variance"
-version = "1.2.3"
+name = "varstat"
+version = "1.3.0"
 edition = "2024"
 authors = ["LKHSSS <Likhsss@qq.com>"]
 description = "一个简单的计算方差的工具。由Rust编写而成。是LKHSSS学习Rust语言的练手之作。"
 license = "MIT"
 repository = "https://github.com/lkhsss/variance"
-keywords = ["math", "rust"]
+keywords = ["math", "statistics", "variance"]
 [dependencies]
 colored = {version="3.1.1",default-features=false}
 

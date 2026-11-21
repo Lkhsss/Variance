@@ -1,16 +1,18 @@
-# Variance
-[![build](https://github.com/Lkhsss/Variance/actions/workflows/build.yml/badge.svg)](https://github.com/Lkhsss/Variance/actions/workflows/build.yml)
+# varstat
+[![build](https://github.com/Lkhsss/varstat/actions/workflows/build.yml/badge.svg)](https://github.com/Lkhsss/varstat/actions/workflows/build.yml)
 
 一个简单的计算方差的工具，实现了彩色输出。
 由Rust编写而成。
 是我学习Rust语言的练手之作。
 
+> crate 名为 `varstat`
+
 ---
 #### 命令格式：
-    .\variance [选项] <num1> <num2> <num3> <num4> <num5> ...
+    .\varstat [选项] <num1> <num2> <num3> <num4> <num5> ...
 #### 例：
-    .\variance 1 2 3 4 5 6 7
-    .\variance --sample 1 2 3 4 5 6 7
+    .\varstat 1 2 3 4 5 6 7
+    .\varstat --sample 1 2 3 4 5 6 7
 
 #### 选项：
 | 选项 | 说明 |
@@ -35,11 +37,11 @@
 
 ```toml
 [dependencies]
-variance = "1.2"
+varstat = "1.3"
 ```
 
 ```rust
-use variance::{variance, Variance};
+use varstat::{variance, Variance};
 
 // 一次性计算（总体方差，÷n）
 let v = variance(&[1., 2., 3., 4., 5., 6., 7.]); // 4.0
@@ -82,3 +84,8 @@ stat.get_standard_deviation(); // 总体标准差
 3. 修复缺陷：增量更新后可能读到过期方差、均值与方差口径不一致（`update` 现在只允许在 `Constructing` 状态调用）
 4. 参数校验增强：拒绝 `NaN` / `inf` 等非有限实数，新增 `--help`，版本号由 `CARGO_PKG_VERSION` 自动生成
 5. 补充算法正确性测试：两遍法与 Welford 增量结果一致、分段累加、单数据、空数据等
+
+## v1.3.0
+1. **改名**：crate 与可执行文件从 `variance` 改为 `varstat`（`variance` 已被 crates.io 上的同名旧库占用，无法发布）
+2. 库 API 不变，`use varstat::{variance, Variance};` 即可使用
+3. 更新 CI 产物名、README 与打包脚本中的二进制名

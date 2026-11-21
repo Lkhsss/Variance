@@ -1,22 +1,22 @@
 use colored::Colorize;
-use variance::Variance;
+use varstat::Variance;
 
 fn print_help() {
-    println!("{}", "Variance".truecolor(0, 191, 255).bold());
+    println!("{}", "varstat".truecolor(0, 191, 255).bold());
     println!("  v{}", env!("CARGO_PKG_VERSION").truecolor(248, 248, 255));
     println!(
         "\t一个简单的计算方差的工具。由 Rust 编写而成。是{}学习 Rust 语言的练手之作。",
         "LKHSSS".truecolor(0, 238, 118)
     );
     println!("\n命令格式：");
-    println!("\t.\\variance [选项] <num1> <num2> ...");
+    println!("\t.\\varstat [选项] <num1> <num2> ...");
     println!("\n选项：");
     println!("\t-s, --sample      输出无偏样本方差（÷(n-1)）");
     println!("\t-p, --population  输出总体方差（÷n，默认）");
     println!("\t-h, --help        显示本帮助");
     println!("\n示例：");
-    println!("\t.\\variance 1 2 3 4 5 6 7");
-    println!("\t.\\variance --sample 1 2 3 4 5 6 7");
+    println!("\t.\\varstat 1 2 3 4 5 6 7");
+    println!("\t.\\varstat --sample 1 2 3 4 5 6 7");
 }
 
 fn main() {
