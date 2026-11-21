@@ -1,6 +1,10 @@
 name: build
 on:
   workflow_dispatch: {}
+  # 推送形如 v1.2.3 的标签时触发构建与发布
+  push:
+    tags:
+      - 'v*.*.*'
 jobs:
   build:
     name: build
@@ -28,7 +32,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
 
       - name: Install Rust
         uses: actions-rs/toolchain@v1
@@ -64,7 +68,33 @@ jobs:
             tar -czf "${{ matrix.archive-name }}" README.md variance
           fi
       - name: Upload archive
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.archive-name }}
           path: archive/${{ matrix.archive-name }}
+  publish-crate:
+    name: Publish to crates.io
+    # 仅在推送 v* 标签时发布，避免手动触发时因版本已存在而失败
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Check tag matches Cargo.toml version
+        shell: bash
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          version="$(sed -n 's/^version = "\(.*\)"$/\1/p' Cargo.toml | head -n 1)"
+          echo "tag=v$tag, Cargo.toml version=$version"
+          if [ "$tag" != "$version" ]; then
+            echo "::error::标签 v$tag 与 Cargo.toml 中的版本 $version 不一致"
+            exit 1
+          fi
+
+      - name: Publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_IO_API_TOKEN }}
+        run: cargo publish

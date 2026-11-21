@@ -1,80 +1,123 @@
 use colored::Colorize;
+use variance::Variance;
 
-fn main() {
-    // 从命令行接收数据
-    let args: Vec<String> = std::env::args().collect();
-    let mut numlist = Vec::new();
-
-    // 判断是否有参数
-    if args.len() < 2 {
-        println!(
-            "{}\n{}\n{}{}{}{}",
-            "Variance".truecolor(0, 191, 255).bold(),
-            "  v1.0.1".truecolor(248, 248, 255),
-            "    一个简单的计算方差的工具。由Rust编写而成。是",
-            "LKHSSS".truecolor(0, 238, 118),
-            "学习Rust语言的练手之作。",
-            "\n命令格式： \n    .\\variance 1 2 3 4 5 6 7"
-        );
-    } else {
-        for arg in args.iter().skip(1) {
-            let num: Result<f64, _> = arg.parse();
-            match num {
-                Ok(num) => {
-                    // 如果 num 是 Ok 类型，说明 arg 是一个数字，可以继续执行后续操作
-                    numlist.push(num);
-                }
-                Err(_) => {
-                    // 如果 num 是 Err 类型，说明 arg 不是一个数字，需要报错
-                    println!(
-                        "{}{}{}{}",
-                        "[ERROR]: ".red().bold(),
-                        "参数 \"".red(),
-                        arg.to_string().red().bold(),
-                        "\"不是有效参数!".red()
-                    );
-                }
-            };
-        }
-
-        // 打印接收到的数据
-        // println!("接收到的数据：{:?}", numlist);
-        if numlist.len() >= 1 {
-            variance(numlist);
-        } else {
-            println!("{} 没有有效参数", "[ERROR]".red().bold());
-        }
-    }
+fn print_help() {
+    println!("{}", "Variance".truecolor(0, 191, 255).bold());
+    println!("  v{}", env!("CARGO_PKG_VERSION").truecolor(248, 248, 255));
+    println!(
+        "\t一个简单的计算方差的工具。由 Rust 编写而成。是{}学习 Rust 语言的练手之作。",
+        "LKHSSS".truecolor(0, 238, 118)
+    );
+    println!("\n命令格式：");
+    println!("\t.\\variance [选项] <num1> <num2> ...");
+    println!("\n选项：");
+    println!("\t-s, --sample      输出无偏样本方差（÷(n-1)）");
+    println!("\t-p, --population  输出总体方差（÷n，默认）");
+    println!("\t-h, --help        显示本帮助");
+    println!("\n示例：");
+    println!("\t.\\variance 1 2 3 4 5 6 7");
+    println!("\t.\\variance --sample 1 2 3 4 5 6 7");
 }
 
-fn variance(numlist: Vec<f64>) -> f64 {
-    // dbg!(&numlist);
-    //计算有多少项
-    let len = numlist.len() as u64;
-    // \033[字背景;前景m
-    // \033[38;2;<r>;<g>;<b>m
-    println!("\n共 {} 项有效数据\n", &len.to_string().bright_green());
+fn main() {
+    // 从命令行接收数据（跳过程序名本身）
+    let args: Vec<String> = std::env::args().skip(1).collect();
+
+    if args.is_empty() {
+        print_help();
+        return;
+    }
+
+    // 默认按方差的数学定义（总体方差，÷n）计算
+    let mut sample_mode = false;
+    let mut numlist: Vec<f64> = Vec::new();
+
+    for arg in &args {
+        match arg.as_str() {
+            "-s" | "--sample" => {
+                sample_mode = true;
+                continue;
+            }
+            "-p" | "--population" => {
+                sample_mode = false;
+                continue;
+            }
+            "-h" | "--help" => {
+                print_help();
+                return;
+            }
+            _ => {}
+        }
+
+        // 先尝试按数字解析，这样 "-5" 这类负数不会被误判为选项
+        match arg.parse::<f64>() {
+            Ok(num) if num.is_finite() => numlist.push(num),
+            Ok(_) => {
+                // 例如 NaN、inf：能解析但不是有效数据
+                println!(
+                    "{}{}{}{}",
+                    "[ERROR]: ".red().bold(),
+                    "参数 \"".red(),
+                    arg.as_str().red().bold(),
+                    "\"不是有限实数!".red()
+                );
+            }
+            Err(_) => {
+                println!(
+                    "{}{}{}{}",
+                    "[ERROR]: ".red().bold(),
+                    "参数 \"".red(),
+                    arg.as_str().red().bold(),
+                    "\"不是有效参数!".red()
+                );
+            }
+        }
+    }
+
+    if numlist.is_empty() {
+        println!("{} 没有有效参数", "[ERROR]".red().bold());
+        return;
+    }
+
+    let var = Variance::from_slice(&numlist).compute();
+    let len = var.count();
+
+    println!("\n共 {} 项有效数据\n", len.to_string().bright_green());
 
     // 计算总和
     let sum: f64 = numlist.iter().sum();
-    println!("总数：   {}", &sum.to_string().truecolor(255, 215, 0));
+    println!("总数：   {}", sum.to_string().truecolor(255, 215, 0));
 
-    //计算平均数
-    let avg = sum as f64 / (len as f64);
-    println!("平均数： {}", &avg.to_string().truecolor(0, 238, 118));
+    println!("平均数： {}", var.mean().to_string().truecolor(0, 238, 118));
 
-    //计算所有元素与其平均值的平方差的总和
-    let allsum: f64 = numlist.iter().map(|x| (x - avg) * (x - avg)).sum();
-
-    // 计算方差
-    let variance = allsum / len as f64;
-
-    println!("方差：   {}", &variance.to_string().truecolor(0, 191, 255));
-
-    // 计算标准差
-    let std = variance.sqrt();
-
-    println!("标准差： {} ", &std.to_string().truecolor(200, 50, 130));
-
-    variance
+    if sample_mode {
+        println!(
+            "样本方差:{}",
+            var.get_sample_variance().to_string().truecolor(0, 191, 255)
+        );
+        println!(
+            "标准差： {} ",
+            var.get_sample_standard_deviation()
+                .to_string()
+                .truecolor(200, 50, 130)
+        );
+        if len < 2 {
+            println!("{} 样本方差至少需要 2 项有效数据", "[WARN]".yellow().bold());
+        }
+    } else {
+        println!(
+            "总体方差:{}",
+            var.get_variance().to_string().truecolor(0, 191, 255)
+        );
+        println!(
+            "标准差： {} ",
+            var.get_standard_deviation()
+                .to_string()
+                .truecolor(200, 50, 130)
+        );
+        println!(
+            "\n使用 {} 可计算无偏样本方差",
+            "--sample".truecolor(0, 238, 118)
+        );
+    }
 }
