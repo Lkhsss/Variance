@@ -35,9 +35,8 @@
 
 ## 作为库使用
 
-```toml
-[dependencies]
-varstat = "1.3"
+```bash
+cargo add varstat
 ```
 
 ```rust
@@ -89,3 +88,7 @@ stat.get_standard_deviation(); // 总体标准差
 1. **改名**：crate 与可执行文件从 `variance` 改为 `varstat`（`variance` 已被 crates.io 上的同名旧库占用，无法发布）
 2. 库 API 不变，`use varstat::{variance, Variance};` 即可使用
 3. 更新 CI 产物名、README 与打包脚本中的二进制名
+
+
+## v1.4.0
+1. 去除`colored`依赖，手动实现终端彩色

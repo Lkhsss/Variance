@@ -1,4 +1,6 @@
-use colored::Colorize;
+mod color;
+
+use color::Colorize;
 use varstat::Variance;
 
 fn print_help() {
